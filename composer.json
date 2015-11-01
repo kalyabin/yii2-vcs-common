@@ -1,0 +1,25 @@
+{
+    "name": "kalyabin/yii2-vcs-common",
+    "description": "Abstraction model for yii2-git-view and yii2-hg-view projects",
+    "type": "extension",
+    "license": "BSD-3-Clause",
+    "version": "dev-master",
+    "reference": "1288e44c46944fda209e2410e36b19d5",
+    "keywords": [],
+    "authors": [
+        {
+            "name": "Max Kalyabin",
+            "email": "maksim@kalyabin.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "vcsCommon\\": ""
+        }
+    }
+}
