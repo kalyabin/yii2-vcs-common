@@ -1,5 +1,5 @@
 <?php
-namespace vcsCommon;
+namespace VcsCommon;
 
 use DirectoryIterator;
 use VcsCommon\exception\RepositoryException;
