@@ -1,5 +1,5 @@
 <?php
-namespace vcsCommon\exception;
+namespace VcsCommon\exception;
 
 /**
  * Repository exception class

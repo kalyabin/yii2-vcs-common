@@ -1,5 +1,5 @@
 <?php
-namespace vcsCommon;
+namespace VcsCommon;
 
 /**
  * Implements directory operations

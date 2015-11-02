@@ -1,7 +1,7 @@
 <?php
-namespace gitView;
+namespace VcsCommon;
 
-use vcsCommon\File;
+use VcsCommon\File;
 
 /**
  * Implements link operations

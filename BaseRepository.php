@@ -2,7 +2,7 @@
 namespace vcsCommon;
 
 use DirectoryIterator;
-use vcsCommon\exception\RepositoryException;
+use VcsCommon\exception\RepositoryException;
 use yii\base\Object;
 use yii\helpers\FileHelper;
 
