@@ -2,7 +2,7 @@
 namespace VcsCommon;
 
 use DirectoryIterator;
-use VcsCommon\exception\RepositoryException;
+use VcsCommon\exception\CommonException;
 use yii\base\Object;
 use yii\helpers\StringHelper;
 
@@ -31,7 +31,7 @@ class File extends Object
      *
      * @param DirectoryIterator $iterator
      * @param BaseRepository $repository
-     * @throws RepositoryException
+     * @throws CommonException
      */
     public function __construct(DirectoryIterator $iterator, BaseRepository $repository)
     {
@@ -39,7 +39,7 @@ class File extends Object
         $this->path = realpath($iterator->getPathname());
         $this->repository = $repository;
         if (!StringHelper::startsWith($this->path, $repository->getProjectPath())) {
-            throw new RepositoryException("Path {$this->path} outband of repository");
+            throw new CommonException("Path {$this->path} outband of repository");
         }
         parent::__construct([]);
     }

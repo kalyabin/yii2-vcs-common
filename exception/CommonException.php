@@ -4,6 +4,6 @@ namespace VcsCommon\exception;
 use yii\base\Exception;
 
 /**
- * Console exception class
+ * Common exception class
  */
 class CommonException extends Exception { }

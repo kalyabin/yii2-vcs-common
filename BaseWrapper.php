@@ -2,7 +2,6 @@
 namespace VcsCommon;
 
 use VcsCommon\exception\CommonException;
-use VcsCommon\exception\RepositoryException;
 use yii\base\Object;
 
 /**
@@ -136,7 +135,7 @@ abstract class BaseWrapper extends Object
      *
      * @param string $dir project directory
      * @return BaseRepository
-     * @throws RepositoryException
+     * @throws CommonException
      */
     abstract public function getRepository($dir);
 }

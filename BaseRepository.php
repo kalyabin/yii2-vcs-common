@@ -2,7 +2,7 @@
 namespace VcsCommon;
 
 use DirectoryIterator;
-use VcsCommon\exception\RepositoryException;
+use VcsCommon\exception\CommonException;
 use yii\base\Object;
 use yii\helpers\FileHelper;
 
@@ -33,14 +33,14 @@ abstract class BaseRepository extends Object
      *
      * @param string $dir project path (not a path to .git or .hg!)
      * @param BaseWrapper $wrapper
-     * @throws RepositoryException
+     * @throws CommonException
      */
     public function __construct($dir, BaseWrapper $wrapper)
     {
         $projectPath = FileHelper::normalizePath(realpath($dir));
         $repositoryPath = FileHelper::normalizePath($projectPath . '/' . $wrapper->getRepositoryPathName());
         if (!is_dir($repositoryPath)) {
-            throw new RepositoryException('Repository not found at ' . $dir);
+            throw new CommonException('Repository not found at ' . $dir);
         }
         $this->projectPath = $projectPath;
         $this->repositoryPath = $repositoryPath;
@@ -83,7 +83,7 @@ abstract class BaseRepository extends Object
      * Check repository status and returns it.
      *
      * @return string
-     * @throws RepositoryException
+     * @throws CommonException
      */
     abstract public function checkStatus();
 
@@ -93,7 +93,7 @@ abstract class BaseRepository extends Object
      *
      * @param string $subDir
      * @return File[]
-     * @throws RepositoryException
+     * @throws CommonException
      */
     public function getFilesList($subDir = null)
     {
@@ -102,7 +102,7 @@ abstract class BaseRepository extends Object
         $dir = FileHelper::normalizePath(realpath($this->projectPath . '/' . $subDir));
 
         if (!is_dir($dir) || $dir == $this->repositoryPath) {
-            throw new RepositoryException("Path $dir is not a directory");
+            throw new CommonException("Path $dir is not a directory");
         }
 
         $iterator = new DirectoryIterator($dir);
@@ -125,9 +125,27 @@ abstract class BaseRepository extends Object
                     $list[] = $file;
                 }
             }
-            catch (RepositoryException $ex) { }
+            catch (CommonException $ex) {
+                // do not stop then one file fails
+            }
         }
 
         return $list;
     }
+
+    /**
+     * Returns repository branches models.
+     *
+     * @return BaseBranch[]
+     * @throws CommonException
+     */
+    abstract public function getBranches();
+
+    /**
+     * Returns commit object by commit id.
+     *
+     * @return BaseCommit
+     * @throws CommonException
+     */
+    abstract public function getCommit($id);
 }
