@@ -112,7 +112,7 @@ abstract class BaseWrapper extends Object
             throw new CommonException('Command ' . $cmd . ' ended with ' . $exitCode . ' status code', $exitCode);
         }
         chdir($currentDirectory);
-        return $getArray ? $result : implode("\n", $result);
+        return $getArray ? $result : implode(PHP_EOL, $result);
     }
 
     /**

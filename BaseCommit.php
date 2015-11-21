@@ -137,4 +137,18 @@ abstract class BaseCommit extends Object
     {
         return $this->date;
     }
+
+    /**
+     * Fill commit diff and compare it with previous commit.
+     *
+     * Returns BaseDiff array.
+     *
+     * I recommend to use $file parameter to parse only one file diffs, because
+     * it's required more memory usage.
+     *
+     * @param string $file path to file diff
+     * @return BaseDiff[] all files diffs or specific file diff
+     * @throws CommonException
+     */
+    abstract public function getDiff($file = null);
 }

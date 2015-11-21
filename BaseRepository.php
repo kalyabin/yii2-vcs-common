@@ -148,4 +148,32 @@ abstract class BaseRepository extends Object
      * @throws CommonException
      */
     abstract public function getCommit($id);
+
+    /**
+     * Execute diff command by specific params.
+     * Can receive everybody params for command line like this:
+     *
+     * ```php
+     * $wrapper = new GitWrapper();
+     * $repo = $wrapper->getRepository('/path/to/repository');
+     *
+     * // get commit diff:
+     * print_r($repo->getDiff('commit', '<commit_sha1>'));
+     *
+     * // get commit compare
+     * print_r($repo->getDiff('compare', '<commit_sha1_first_commit>', '<commit_sha1_last_commit>');
+     *
+     * // get file diff
+     * print_r($repo->getDiff('path', '/path/to/file');
+     *
+     * // get full repo diff
+     * print_r($repo->getDiff('repository');
+     * ```
+     *
+     * Returns array: each reults row at new element.
+     *
+     * @return string[]
+     * @throw CommonException
+     */
+    abstract public function getDiff();
 }
