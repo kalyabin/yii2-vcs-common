@@ -186,4 +186,14 @@ abstract class BaseRepository extends Object
      * @throws CommonException
      */
     abstract public function getHistory($limit, $skip);
+
+    /**
+     * Returns repository graph history
+     *
+     * @param integer $limit commits max count
+     * @param integer $skip skip count commits
+     * @return Graph[] array of commits history with leader last commits or graph items only
+     * @throws CommonException
+     */
+    abstract public function getGraphHistory($limit, $skip);
 }
