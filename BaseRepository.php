@@ -176,4 +176,14 @@ abstract class BaseRepository extends Object
      * @throw CommonException
      */
     abstract public function getDiff();
+
+    /**
+     * Returns repository history
+     *
+     * @param integer $limit commits max count
+     * @param integer $skip skip count commits
+     * @return BaseCommit[] array of commits history with leader last commits
+     * @throws CommonException
+     */
+    abstract public function getHistory($limit, $skip);
 }
