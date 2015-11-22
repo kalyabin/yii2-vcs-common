@@ -144,7 +144,7 @@ abstract class BaseCommit extends Object
      * Returns BaseDiff array.
      *
      * I recommend to use $file parameter to parse only one file diffs, because
-     * it's required more memory usage.
+     * it's required more memory usage without this parameter.
      *
      * @param string $file path to file diff
      * @return BaseDiff[] all files diffs or specific file diff

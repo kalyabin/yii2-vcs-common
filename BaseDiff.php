@@ -16,12 +16,12 @@ abstract class BaseDiff extends Object
     /**
      * @var string raw diff head description without file lines
      */
-    public $description;
+    protected $description;
 
     /**
      * @var boolean true if diff is binary
      */
-    public $isBinary = false;
+    protected $isBinary = false;
 
     /**
      * Changed lines.
@@ -47,24 +47,36 @@ abstract class BaseDiff extends Object
      * ```
      * @var string[]
      */
-    public $lines = array();
+    protected $lines = array();
 
     /**
      * @var string relative path to previos file version
      */
-    public $previousFilePath;
+    protected $previousFilePath;
 
     /**
      * @var string relative path to new file version
      */
-    public $newFilePath;
+    protected $newFilePath;
 
     /**
-     * Sets public properties from command line using string variable.
+     * Create object using console result rows.
      *
-     * @param string[] $str
+     * @param string[] $consoleResult
+     * @param array $config
      */
-    abstract public function setResults($str);
+    public function __construct($consoleResult, $config = array())
+    {
+        parent::__construct($config);
+        $this->initialize($consoleResult);
+    }
+
+    /**
+     * Sets object properties using $rows param from console command.
+     *
+     * @param string[] $rows
+     */
+    abstract protected function initialize($rows);
 
     /**
      * Returns true if file was removed at commit.
@@ -84,5 +96,55 @@ abstract class BaseDiff extends Object
     public function fileIsNew()
     {
         return $this->previousFilePath = self::NULL_PATH;
+    }
+
+    /**
+     * Returns description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Returns is binary flag
+     *
+     * @return boolean
+     */
+    public function getIsBinary()
+    {
+        return $this->isBinary;
+    }
+
+    /**
+     * Returns new file path
+     *
+     * @return string
+     */
+    public function getNewFilePath()
+    {
+        return $this->newFilePath;
+    }
+
+    /**
+     * Returns previos file path
+     *
+     * @return string
+     */
+    public function getPreviousFilePath()
+    {
+        return $this->previousFilePath;
+    }
+
+    /**
+     * Returns changed file lines
+     *
+     * @return array
+     */
+    public function getLines()
+    {
+        return $this->lines;
     }
 }
