@@ -24,48 +24,30 @@ abstract class BaseDiff extends Object
     public $isBinary = false;
 
     /**
-     * Array new file lines.
-     * Array key is diff identifier like '@@ -18,4 +18,14 @@', and values is
-     * array of changed lines, where key is line number.
+     * Changed lines.
      *
-     * For example:
+     * Array like this:
      * ```php
      * array(
-     *     '@@ -18,3 +18,4 @@' => array(
-     *         18 => 'old line 1',
-     *         19 => 'old line 2',
-     *         20 => 'old line 3',
-     *         21 => 'this new file line',
-     *         // if null, line do not exists at new file version
+     *     '@@ -1,4 +1,4 @@' => array(
+     *             'beginA' => 1,
+     *             'beginB' => 2,
+     *             'cntA' => 4,
+     *             'cntB' => 4,
+     *             'lines' => array(
+     *                '-test word 1 this temporary row first',
+     *                '+test word 1 this temporary row first1',
+     *                ' test word 2 this temporary row second',
+     *                ' test word 3 thos temporary row third',
+     *                ' this row will be constant',
+     *             ),
      *     ),
-     *     // etc
+     *     // any changes at file
      * )
      * ```
      * @var string[]
      */
-    public $newLines = array();
-
-    /**
-     * Array old lines.
-     * Array key is diff identifier like '@@ -8,4 +8,14 @@', and values is
-     * array of changed lines, where key is line number.
-     *
-     * For example:
-     * ```php
-     * array(
-     *     '@@ -18,3 +18,4 @@' => array(
-     *         18 => 'old line 1',
-     *         19 => 'old line 2',
-     *         20 => 'old line 3',
-     *         21 => null, // line do not exists at old file version
-     *         // if null, line do not exists at old file version
-     *     ),
-     *     // etc
-     * )
-     * ```
-     * @var string[]
-     */
-    public $previousLines = array();
+    public $lines = array();
 
     /**
      * @var string relative path to previos file version
