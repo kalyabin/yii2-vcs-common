@@ -85,6 +85,6 @@ class Graph extends Object
      */
     public function hasCommitPiece()
     {
-        return in_array($this->graphPieces, self::COMMIT);
+        return in_array(self::COMMIT, $this->graphPieces);
     }
 }
