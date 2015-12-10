@@ -4,7 +4,7 @@
     "type": "extension",
     "license": "BSD-3-Clause",
     "version": "dev-master",
-    "reference": "40109bbc43034113628a0e5657e33dff",
+    "reference": "8d863002d04b42da9b1dcfb366ca200af",
     "keywords": [],
     "authors": [
         {
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "VcsCommon\\": ""
+            "VcsCommon\\": "src/"
         }
     }
 }
