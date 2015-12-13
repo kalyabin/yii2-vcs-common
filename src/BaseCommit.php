@@ -41,6 +41,16 @@ abstract class BaseCommit extends Object
     public $contributorEmail;
 
     /**
+     * @var integer nested level to draw graph history
+     */
+    public $graphLevel;
+
+    /**
+     * @var string[] parents commits identifiers
+     */
+    protected $parentsId = [];
+
+    /**
      * Constructor
      *
      * @param BaseRepository $repository
@@ -90,6 +100,36 @@ abstract class BaseCommit extends Object
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set parents commits ids.
+     * If sent as array - push as it, if sent as string - explode by space and push.
+     *
+     * @param array|string $value
+     */
+    public function setParentsId($value)
+    {
+        $this->parentsId = [];
+
+        if (is_array($value)) {
+            foreach ($value as $id) {
+                if (is_string($id)) {
+                    $this->parentsId[] = $id;
+                }
+            }
+        }
+        else if (is_string($value)) {
+            $this->parentsId = explode(' ', $value);
+        }
+    }
+
+    /**
+     * @return string[] parents commits ids
+     */
+    public function getParentsId()
+    {
+        return $this->parentsId;
     }
 
     /**

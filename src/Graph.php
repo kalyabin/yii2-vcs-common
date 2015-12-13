@@ -5,86 +5,48 @@ use yii\base\Object;
 
 /**
  * Class represents graph history log.
- *
- * Contains two params:
- * - pieces - graph pieces like: /, \, |, space or commit.
- * - commit - if type is commit, contains BaseCommit object, or null if else.
+ * Contains:
+ * - levels - count of nested commits;
+ * - commits - all commits in a history.
  */
 class Graph extends Object
 {
     /**
-     * Graphic pieces types
+     * @var integer nested level
      */
-    const RIGHT = '/';
-    const LEFT = '\\';
-    const DIRECT = '|';
-    const SPACE = ' ';
-    const COMMIT = '*';
+    protected $levels = 0;
 
     /**
-     * @var string[] graph item pieces
+     * @var BaseCommit[] commits array
      */
-    protected $graphPieces = [];
+    protected $commits = [];
 
     /**
-     * @var BaseCommit|null commit item, or null
-     */
-    protected $commit;
-
-    /**
-     * Piece setter
+     * Push new commit to stack and check him level.
+     * Used static var to check head levels commits.
      *
-     * @param string $val
+     * @staticvar array $headLevels
+     * @param BaseCommit $commit
      */
-    public function appendPiece($val)
+    public function pushCommit(BaseCommit $commit)
     {
-        if (in_array($val, [self::RIGHT, self::LEFT, self::DIRECT, self::COMMIT])) {
-            $this->graphPieces[] = $val;
-        }
-        else {
-            $this->graphPieces[] = self::SPACE;
-        }
+        $this->commits[$commit->getId()] = $commit;
+        $this->levels = max($commit->graphLevel, $this->levels);
     }
 
     /**
-     * Returns graph pieces
-     *
-     * @return string[]
+     * @return integer maximum level num
      */
-    public function getType()
+    public function getLevels()
     {
-        return !empty($this->graphPieces) ? $this->graphPieces : [self::DIRECT];
+        return $this->levels;
     }
 
     /**
-     * Commit setter
-     *
-     * @param BaseCommit $val
+     * @return BaseCommit[] get stack commits
      */
-    public function setCommit($val)
+    public function getCommits()
     {
-        if ($val instanceof BaseCommit) {
-            $this->commit = $val;
-        }
-    }
-
-    /**
-     * Returns commit property
-     *
-     * @return BaseCommit|null
-     */
-    public function getCommit()
-    {
-        return $this->commit;
-    }
-
-    /**
-     * Returns true if pieces has commit property
-     *
-     * @return boolean
-     */
-    public function hasCommitPiece()
-    {
-        return in_array(self::COMMIT, $this->graphPieces);
+        return array_values($this->commits);
     }
 }
