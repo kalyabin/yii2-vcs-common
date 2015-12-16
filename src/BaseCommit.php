@@ -46,6 +46,19 @@ abstract class BaseCommit extends Object
     public $graphLevel;
 
     /**
+     * Changed files list like this:
+     * [
+     *     [
+     *         'path' => new File(), // repository file object
+     *          'status' => 'R|A|N|etc', // file status
+     *     ],
+     * ]
+     *
+     * @var array
+     */
+    protected $changedFiles = [];
+
+    /**
      * @var string[] parents commits identifiers
      */
     protected $parentsId = [];
@@ -191,4 +204,49 @@ abstract class BaseCommit extends Object
      * @throws CommonException
      */
     abstract public function getDiff($file = null);
+
+    /**
+     * Push changed file to list.
+     *
+     * For input array structure see changedFiles documentation.
+     *
+     * @see changedFiles
+     * @param array $item
+     */
+    public function appendChangedFile(array $item)
+    {
+        // validate item and put it to stack
+        if (isset($item['path']) && $item['path'] instanceof File
+            && isset($item['status']) && is_string($item['status'])) {
+            $this->changedFiles[$item['path']->getPath()] = $item;
+        }
+        ksort($this->changedFiles);
+    }
+
+    /**
+     * Set change files by commit.
+     *
+     * For input array structure see changedFiles documentation.
+     *
+     * @see changedFiles
+     * @param array $list list of changed files
+     */
+    public function setChangedFiles(array $list)
+    {
+        $this->changedFiles = [];
+        foreach ($list as $item) {
+            // validate file
+            if (is_array($item)) {
+                $this->appendChangedFile($item);
+            }
+        }
+    }
+
+    /**
+     * @return array changed files by commit
+     */
+    public function getChangedFiles()
+    {
+        return array_values($this->changedFiles);
+    }
 }

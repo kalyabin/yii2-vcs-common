@@ -106,20 +106,20 @@ abstract class BaseRepository extends Object
         }
 
         $iterator = new DirectoryIterator($dir);
-        foreach ($iterator as $path) {
+        foreach ($iterator as $i) {
             try {
                 $file = null;
                 if (
-                    ($path->isDir() && !$path->isDot() && $path->getFilename() != $this->wrapper->getRepositoryPathName()) ||
-                    ($path->isDot() && $path->getFilename() != '.')
+                    ($i->isDir() && !$i->isDot() && $i->getFilename() != $this->wrapper->getRepositoryPathName()) ||
+                    ($i->isDot() && $i->getFilename() != '.')
                 ) {
-                    $file = new Directory($path, $this);
+                    $file = new Directory($i->getPathname(), $this);
                 }
-                else if ($path->isFile()) {
-                    $file = new File($path, $this);
+                else if ($i->isFile()) {
+                    $file = new File($i->getPathname(), $this);
                 }
-                else if ($path->isLink()) {
-                    $file = new FileLink($path, $this);
+                else if ($i->isLink()) {
+                    $file = new FileLink($i->getPathname(), $this);
                 }
                 if ($file instanceof File) {
                     $list[] = $file;
