@@ -206,6 +206,16 @@ abstract class BaseCommit extends Object
     abstract public function getDiff($file = null);
 
     /**
+     * Get a raw file at this revision.
+     *
+     * Returns file contents.
+     *
+     * @param string $filePath path to file to view
+     * @throws CommonException
+     */
+    abstract public function getRawFile($filePath);
+
+    /**
      * Push changed file to list.
      *
      * For input array structure see changedFiles documentation.
