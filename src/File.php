@@ -14,6 +14,27 @@ use yii\helpers\StringHelper;
  */
 class File extends Object
 {
+    const STATUS_ADDITION = 'A';
+
+    const STATUS_COPIED = 'C';
+
+    const STATUS_DELETION = 'D';
+
+    const STATUS_MODIFIED = 'M';
+
+    const STATUS_RENAMING = 'R';
+
+    const STATUS_TYPED = 'T';
+
+    const STATUS_UNMERGED = 'U';
+
+    const STATUS_UNKNOWN = 'X';
+
+    /**
+     * @var string modification status code in specified revision
+     */
+    protected $status;
+
     /**
      * @var string file name
      */
@@ -34,12 +55,15 @@ class File extends Object
      *
      * @param string $pathName
      * @param BaseRepository $repository
+     * @param string|null $status file status in revision
+     *
      * @throws CommonException
      */
-    public function __construct($pathName, BaseRepository $repository)
+    public function __construct($pathName, BaseRepository $repository, $status = null)
     {
         $this->name = basename($pathName);
         $this->path = FileHelper::normalizePath($pathName);
+        $this->status = $status;
         $this->repository = $repository;
         if (!StringHelper::startsWith($this->path, $repository->getProjectPath())) {
             throw new CommonException("Path {$this->path} outband of repository");
@@ -85,6 +109,18 @@ class File extends Object
     public function getPathname()
     {
         return ltrim(mb_substr($this->path, mb_strlen($this->repository->getProjectPath())), DIRECTORY_SEPARATOR);
+    }
+
+    /**
+     * Returns revision status.
+     *
+     * Null if has no modifications.
+     *
+     * @return string|null
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**

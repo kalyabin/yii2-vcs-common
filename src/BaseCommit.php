@@ -46,15 +46,7 @@ abstract class BaseCommit extends Object
     public $graphLevel;
 
     /**
-     * Changed files list like this:
-     * [
-     *     [
-     *         'path' => new File(), // repository file object
-     *          'status' => 'R|A|N|etc', // file status
-     *     ],
-     * ]
-     *
-     * @var array
+     * @var File[] Changed files list with statuses codes
      */
     protected $changedFiles = [];
 
@@ -216,21 +208,48 @@ abstract class BaseCommit extends Object
     abstract public function getRawFile($filePath);
 
     /**
+     * Get a raw file at previous revision.
+     *
+     * Returns file contents.
+     *
+     * @param string $filePath path to file to view
+     * @throws CommonException
+     */
+    abstract public function getPreviousRawFile($filePath);
+
+    /**
      * Push changed file to list.
      *
      * For input array structure see changedFiles documentation.
      *
      * @see changedFiles
-     * @param array $item
+     * @param File $item
      */
-    public function appendChangedFile(array $item)
+    public function appendChangedFile(File $item)
     {
         // validate item and put it to stack
-        if (isset($item['path']) && $item['path'] instanceof File
-            && isset($item['status']) && is_string($item['status'])) {
-            $this->changedFiles[$item['path']->getPath()] = $item;
-        }
+        $this->changedFiles[$item->getPath()] = $item;
         ksort($this->changedFiles);
+    }
+
+    /**
+     * Returns file status at this commit.
+     *
+     * If file was changed - returns string status, if else - returns null.
+     *
+     * @param string $filePath Relative file path
+     * @return string|null
+     */
+    public function getFileStatus($filePath)
+    {
+        foreach ($this->changedFiles as $item) {
+            /* @var $path File */
+            if (ltrim($item->getPathname(), DIRECTORY_SEPARATOR) === ltrim($filePath, DIRECTORY_SEPARATOR)) {
+                return $item->getStatus();
+            }
+        }
+
+        return null;
     }
 
     /**
