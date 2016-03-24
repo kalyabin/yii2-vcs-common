@@ -109,10 +109,7 @@ abstract class BaseRepository extends Object
         foreach ($iterator as $i) {
             try {
                 $file = null;
-                if (
-                    ($i->isDir() && !$i->isDot() && $i->getFilename() != $this->wrapper->getRepositoryPathName()) ||
-                    ($i->isDot() && $i->getFilename() != '.')
-                ) {
+                if ($i->isDir() && !$i->isDot() && $i->getFilename() != $this->wrapper->getRepositoryPathName()) {
                     $file = new Directory($i->getPathname(), $this);
                 }
                 else if ($i->isFile()) {
