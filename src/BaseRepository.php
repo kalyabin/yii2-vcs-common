@@ -182,10 +182,12 @@ abstract class BaseRepository extends Object
      *
      * @param integer $limit commits max count
      * @param integer $skip skip count commits
+     * @param string $path Get history of specified path (null if get root path history)
+     *
      * @return BaseCommit[] array of commits history with leader last commits
      * @throws CommonException
      */
-    abstract public function getHistory($limit, $skip);
+    abstract public function getHistory($limit, $skip, $path = null);
 
     /**
      * Returns repository graph history.
