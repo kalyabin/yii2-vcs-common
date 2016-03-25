@@ -108,7 +108,6 @@ abstract class BaseWrapper extends Object
         }
         exec($cmd, $result, $exitCode);
         if ($exitCode != 0) {
-            chdir($currentDirectory);
             throw new CommonException('Command ' . $cmd . ' ended with ' . $exitCode . ' status code', $exitCode);
         }
         chdir($currentDirectory);

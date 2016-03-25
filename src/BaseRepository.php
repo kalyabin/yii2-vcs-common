@@ -196,4 +196,13 @@ abstract class BaseRepository extends Object
      * @throws CommonException
      */
     abstract public function getGraphHistory($limit, $skip);
+
+    /**
+     * Returns true if path is in repository tracking.
+     *
+     * @param string $filePath Relative file path
+     *
+     * @return boolean
+     */
+    abstract public function pathIsNotIgnored($filePath);
 }
