@@ -94,10 +94,12 @@ abstract class BaseWrapper extends Object
      * @param string|array $params command prefix, see buildCommand method for details.
      * @param string $dir directory in which the command is executed
      * @param boolean $getArray returns execution result as array if true, or string if false
+     * @param boolean $ignoreErrors skip non-null exit status
+     *
      * @return string|array
      * @throws CommonException
      */
-    public function execute($params, $dir = null, $getArray = false)
+    public function execute($params, $dir = null, $getArray = false, $ignoreErrors = false)
     {
         $currentDirectory = getcwd();
         $result = [];
@@ -107,7 +109,7 @@ abstract class BaseWrapper extends Object
             chdir($dir);
         }
         exec($cmd, $result, $exitCode);
-        if ($exitCode != 0) {
+        if ($exitCode != 0 && !$ignoreErrors) {
             throw new CommonException('Command ' . $cmd . ' ended with ' . $exitCode . ' status code', $exitCode);
         }
         chdir($currentDirectory);
