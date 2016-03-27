@@ -86,7 +86,7 @@ abstract class BaseWrapper extends Object
             $ret = implode(' ', $ret);
         }
 
-        return !empty($ret) ? $this->cmd . ' ' . $ret : $this->cmd;
+        return !empty($ret) ? $this->cmd . ' ' . escapeshellcmd($ret) : $this->cmd;
     }
 
     /**
