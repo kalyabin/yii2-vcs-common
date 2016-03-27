@@ -1,6 +1,7 @@
 <?php
 namespace VcsCommon;
 
+use Yii;
 use VcsCommon\exception\CommonException;
 use yii\base\Object;
 
@@ -89,6 +90,22 @@ abstract class BaseWrapper extends Object
     }
 
     /**
+     * Returns current application charset
+     *
+     * @return string
+     */
+    protected function getCurrentCharset()
+    {
+        $charset = mb_internal_encoding();
+
+        if (isset(Yii::$app)) {
+            $charset = Yii::$app->charset;
+        }
+
+        return $charset;
+    }
+
+    /**
      * Execute VCS command with params.
      *
      * @param string|array $params command prefix, see buildCommand method for details.
@@ -111,6 +128,13 @@ abstract class BaseWrapper extends Object
         exec($cmd, $result, $exitCode);
         if ($exitCode != 0 && !$ignoreErrors) {
             throw new CommonException('Command ' . $cmd . ' ended with ' . $exitCode . ' status code', $exitCode);
+        }
+        // convert to internal encoding
+        $currentCharset = $this->getCurrentCharset();
+        foreach ($result as $k => $row) {
+            if (mb_detect_encoding($row) != $currentCharset) {
+                $result[$k] = mb_convert_encoding($row, $currentCharset, mb_detect_encoding($row));
+            }
         }
         chdir($currentDirectory);
         return $getArray ? $result : implode(PHP_EOL, $result);
