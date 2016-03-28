@@ -118,26 +118,42 @@ abstract class BaseWrapper extends Object
      */
     public function execute($params, $dir = null, $getArray = false, $ignoreErrors = false)
     {
+        $currentCharset = $this->getCurrentCharset();
         $currentDirectory = getcwd();
-        $result = [];
-        $exitCode = 0;
+        $result = $getArray ? [] : '';
         $cmd = $this->buildCommand($params);
         if ($dir) {
             chdir($dir);
         }
-        exec($cmd, $result, $exitCode);
-        if ($exitCode != 0 && !$ignoreErrors) {
-            throw new CommonException('Command ' . $cmd . ' ended with ' . $exitCode . ' status code', $exitCode);
-        }
-        // convert to internal encoding
-        $currentCharset = $this->getCurrentCharset();
-        foreach ($result as $k => $row) {
-            if (mb_detect_encoding($row) != $currentCharset) {
-                $result[$k] = mb_convert_encoding($row, $currentCharset, mb_detect_encoding($row));
+        $res = popen($cmd, 'r');
+        while (!feof($res)) {
+            $row = fgets($res);
+            $row = preg_replace('#(.*)\n$#i', '$1', $row);
+            if (feof($res) && !trim($row)) {
+                // empty ending line
+                break;
+            }
+            // convert to internal encoding
+            $charset = mb_detect_encoding($row);
+            if ($charset != $currentCharset) {
+                $row = mb_convert_encoding($row, $currentCharset, $charset);
+            }
+            if ($getArray) {
+                $result[] = $row;
+            }
+            elseif (!empty($result)) {
+                $result .= PHP_EOL . $row;
+            }
+            else {
+                $result .= $row;
             }
         }
+        $status = pclose($res);
+        if ($status != 0 && !$ignoreErrors) {
+            throw new CommonException('Command ' . $cmd . ' ended with ' . $status . ' status code', $status);
+        }
         chdir($currentDirectory);
-        return $getArray ? $result : implode(PHP_EOL, $result);
+        return $result;
     }
 
     /**
