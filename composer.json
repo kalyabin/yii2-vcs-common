@@ -3,8 +3,7 @@
     "description": "Abstraction model for yii2-git-view and yii2-hg-view projects",
     "type": "extension",
     "license": "BSD-3-Clause",
-    "version": "dev-master",
-    "reference": "8d863002d04b42da9b1dcfb366ca200af",
+    "version": "0.1.0-dev",
     "keywords": [],
     "authors": [
         {
