@@ -13,6 +13,26 @@ use yii\helpers\FileHelper;
 abstract class BaseRepository extends Object
 {
     /**
+     * Defines a commit diff command
+     */
+    const DIFF_COMMIT = 'commit';
+
+    /**
+     * Defines a compare diff command
+     */
+    const DIFF_COMPARE = 'compare';
+
+    /**
+     * Defines a path diff command
+     */
+    const DIFF_PATH = 'path';
+
+    /**
+     * Defines a full repository diff command
+     */
+    const DIFF_REPOSITORY = 'repository';
+
+    /**
      * @var BaseWrapper common VCS interface
      */
     protected $wrapper;
@@ -45,7 +65,7 @@ abstract class BaseRepository extends Object
         $this->projectPath = $projectPath;
         $this->repositoryPath = $repositoryPath;
         $this->wrapper = $wrapper;
-        $this->checkStatus();
+        $this->checkRepository();
         parent::__construct([]);
     }
 
@@ -78,6 +98,14 @@ abstract class BaseRepository extends Object
     {
         return $this->repositoryPath;
     }
+
+    /**
+     * Returns true if repository exists in project path.
+     *
+     * @return boolean
+     * @throws CommonException
+     */
+    abstract protected function checkRepository();
 
     /**
      * Check repository status and returns it.
