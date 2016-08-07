@@ -24,6 +24,23 @@ abstract class BaseWrapper extends Object
     protected $version;
 
     /**
+     * Debug handler to write or process log messages.
+     *
+     * Like this:
+     *
+     * ```php
+     * function($message) {
+     *     fwrite(STDOUT, date('Y-m-d H:i:s') . ': ' . $message . "\n");
+     * }
+     * ```
+     *
+     * If it is not defined all debug messages will be written to VCS_DEBUG_FILE.
+     *
+     * @var callable
+     */
+    public $debugHandler;
+
+    /**
      * Sets cmd property and checks VCS version
      *
      * @param string $cmd
@@ -123,8 +140,10 @@ abstract class BaseWrapper extends Object
         $result = $getArray ? [] : '';
         $cmd = $this->buildCommand($params);
         if ($dir) {
+            $this->debug("* Change directory to:\n\t$dir");
             chdir($dir);
         }
+        $this->debug("* Execute command (" . ($ignoreErrors ? "ignore errors" : "do not ignore errors") . "):\n\t$cmd");
         $res = popen($cmd, 'r');
         while (!feof($res)) {
             $row = fgets($res);
@@ -150,8 +169,10 @@ abstract class BaseWrapper extends Object
         }
         $status = pclose($res);
         if ($status != 0 && !$ignoreErrors) {
+            $this->debug("* Non-zero status code: $status");
             throw new CommonException('Command ' . $cmd . ' ended with ' . $status . ' status code', $status);
         }
+        $this->debug("* Change directory to:\n\t$currentDirectory");
         chdir($currentDirectory);
         return $result;
     }
@@ -179,4 +200,28 @@ abstract class BaseWrapper extends Object
      * @throws CommonException
      */
     abstract public function getRepository($dir);
+
+    /**
+     * Write debug message or other actions with log messages.
+     *
+     * Debug handler will run only if VCS_DEBUG defined.
+     *
+     * Message will be written to VCS_DEBUG_FILE if it's defined, and
+     * will be sent to debugHandler if it's defined.
+     *
+     * @param string $message Debug message
+     */
+    protected function debug($message)
+    {
+        // debug is not required
+        if (defined('VCS_DEBUG') && VCS_DEBUG === true) {
+            if (!is_callable($this->debugHandler)) {
+                $this->debugHandler = function($msg) {
+                    $debugFile = defined('VCS_DEBUG_FILE') ? VCS_DEBUG_FILE : __DIR__ . '/debug.log';
+                    file_put_contents($debugFile, $msg . "\n", FILE_APPEND);
+                };
+            }
+            call_user_func($this->debugHandler, $message);
+        }
+    }
 }
