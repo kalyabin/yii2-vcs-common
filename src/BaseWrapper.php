@@ -123,6 +123,51 @@ abstract class BaseWrapper extends Object
     }
 
     /**
+     * Execute VCS command with params and get binary result.
+     *
+     * To handle result use callback-function $streamHandler.
+     *
+     * For example:
+     *
+     * ```php
+     * header('Content-type: image/png');
+     *
+     * $gitWrapper->executeBinary(function($streamResult) {
+     *  echo $streamResult;
+     * }, ['show', '<sha1>:</path/to/png>'], '/path/to/git/repository');
+     * ```
+     *
+     * @param callable $streamHandler Callback-function to handle binary result
+     * @param string|array $params command prefix, see buildCommand method for details.
+     * @param string $dir directory in which the command is executed
+     * @param boolean $ignoreErrors skip non-null exit status
+     * @throws CommonException
+     */
+    public function executeBinary($streamHandler, $params, $dir = null, $ignoreErrors = false)
+    {
+        $currentDirectory = getcwd();
+
+        if ($dir) {
+            $this->debug("* Change directory to:\n\t$dir");
+            chdir($dir);
+        }
+
+        $cmd = $this->buildCommand($params);
+        $this->debug("* Execute binary command (" . ($ignoreErrors ? "ignore errors" : "do not ignore errors") . "):\n\t$cmd");
+        $res = popen($cmd, 'rb');
+        while (!feof($res)) {
+            call_user_func($streamHandler, fread($res, 8192));
+        }
+        $status = pclose($res);
+        if ($status != 0 && !$ignoreErrors) {
+            $this->debug("* Non-zero status code: $status");
+            throw new CommonException('Command ' . $cmd . ' ended with ' . $status . ' status code', $status);
+        }
+
+        chdir($currentDirectory);
+    }
+
+    /**
      * Execute VCS command with params.
      *
      * @param string|array $params command prefix, see buildCommand method for details.
