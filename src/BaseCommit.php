@@ -208,6 +208,25 @@ abstract class BaseCommit extends Object
     abstract public function getRawFile($filePath);
 
     /**
+     * Get binary file for specified path and commit identifier.
+     *
+     * To handle binary data use callback-function $streamHandler, for example:
+     *
+     * ```php
+     * header('Content-type: image/png');
+     *
+     * $commit->getRawBinaryFile('/path/to/png', function($data) {
+     *  echo $data;
+     *  flush();
+     * });
+     * ```
+     *
+     * @param string $filePath Relative path to binary file
+     * @param callable $streamHandler Callback-functin to handle binary data
+     */
+    abstract public function getRawBinaryFile($filePath, $streamHandler);
+
+    /**
      * Get a raw file at previous revision.
      *
      * Returns file contents.

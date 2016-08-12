@@ -233,20 +233,4 @@ abstract class BaseRepository extends Object
      * @return boolean
      */
     abstract public function pathIsNotIgnored($filePath);
-
-    /**
-     * Get binary file for specified path and commit identifier.
-     *
-     * To handle binary data use callback-function $streamHandler, for example:
-     *
-     * ```php
-     * header('Content-type: image/png');
-     *
-     * $repository->getBinaryFile('<commitId>', '</path/to/png>', function($data) {
-     *  echo $data;
-     *  flush();
-     * });
-     * ```
-     */
-    abstract public function getBinaryFile($commitId, $filePath, $streamHandler);
 }
