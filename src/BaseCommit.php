@@ -46,7 +46,7 @@ abstract class BaseCommit extends Object
     public $graphLevel;
 
     /**
-     * @var File[] Changed files list with statuses codes
+     * @var array Changed files list with statuses codes (key - file path, value - file status)
      */
     protected $changedFiles = [];
 
@@ -239,16 +239,35 @@ abstract class BaseCommit extends Object
     /**
      * Push changed file to list.
      *
-     * For input array structure see changedFiles documentation.
+     * For input parameters structure see changedFiles documentation.
      *
      * @see changedFiles
-     * @param File $item
+     *
+     * @param string $path Relative file path
+     * @param string $status File status
      */
-    public function appendChangedFile(File $item)
+    public function appendChangedFile($path, $status)
     {
-        // validate item and put it to stack
-        $this->changedFiles[$item->getPath()] = $item;
+        $this->changedFiles[$path] = $status;
         ksort($this->changedFiles);
+    }
+
+    /**
+     * Retrieve file object by relative file path
+     *
+     * @param string $filePath Relative file path
+     *
+     * @return File
+     */
+    public function getFileByPath($filePath)
+    {
+        $normalizePath = ltrim($filePath, DIRECTORY_SEPARATOR);
+        if (isset($this->changedFiles[$normalizePath])) {
+            $status = $this->changedFiles[$normalizePath];
+            $file = new File($this->repository->getProjectPath() . DIRECTORY_SEPARATOR . $normalizePath, $this->repository, $status);
+            return $file;
+        }
+        return null;
     }
 
     /**
@@ -261,40 +280,28 @@ abstract class BaseCommit extends Object
      */
     public function getFileStatus($filePath)
     {
-        foreach ($this->changedFiles as $item) {
-            /* @var $path File */
-            if (ltrim($item->getPathname(), DIRECTORY_SEPARATOR) === ltrim($filePath, DIRECTORY_SEPARATOR)) {
-                return $item->getStatus();
-            }
-        }
-
-        return null;
+        $file = $this->getFileByPath($filePath);
+        return $file instanceof File ? $file->getStatus() : null;
     }
 
     /**
-     * Set change files by commit.
-     *
-     * For input array structure see changedFiles documentation.
-     *
-     * @see changedFiles
-     * @param array $list list of changed files
+     * Clear changed files array
      */
-    public function setChangedFiles(array $list)
+    public function resetChangedFiles()
     {
         $this->changedFiles = [];
-        foreach ($list as $item) {
-            // validate file
-            if (is_array($item)) {
-                $this->appendChangedFile($item);
-            }
-        }
     }
 
     /**
-     * @return array changed files by commit
+     * Retrieve array of files objects
+     *
+     * @return File[]
      */
     public function getChangedFiles()
     {
-        return array_values($this->changedFiles);
+        foreach ($this->changedFiles as $filePath => $status) {
+            $file = $this->getFileByPath($filePath);
+            yield $file;
+        }
     }
 }
