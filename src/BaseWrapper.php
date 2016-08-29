@@ -258,14 +258,14 @@ abstract class BaseWrapper extends Object
      */
     protected function debug($message)
     {
-        // debug is not required
-        if (defined('VCS_DEBUG') && VCS_DEBUG === true) {
-            if (!is_callable($this->debugHandler)) {
-                $this->debugHandler = function($msg) {
-                    $debugFile = defined('VCS_DEBUG_FILE') ? VCS_DEBUG_FILE : __DIR__ . '/debug.log';
-                    file_put_contents($debugFile, $msg . "\n", FILE_APPEND);
-                };
-            }
+        if (defined('VCS_DEBUG') && VCS_DEBUG === true && !is_callable($this->debugHandler)) {
+            $this->debugHandler = function($msg) {
+                $debugFile = defined('VCS_DEBUG_FILE') ? VCS_DEBUG_FILE : __DIR__ . '/debug.log';
+                file_put_contents($debugFile, $msg . "\n", FILE_APPEND);
+            };
+        }
+        // call debug user function
+        if (is_callable($this->debugHandler)) {
             call_user_func($this->debugHandler, $message);
         }
     }
