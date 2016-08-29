@@ -46,11 +46,6 @@ abstract class BaseCommit extends Object
     public $graphLevel;
 
     /**
-     * @var array Changed files list with statuses codes (key - file path, value - file status)
-     */
-    protected $changedFiles = [];
-
-    /**
      * @var string[] parents commits identifiers
      */
     protected $parentsId = [];
@@ -237,20 +232,13 @@ abstract class BaseCommit extends Object
     abstract public function getPreviousRawFile($filePath);
 
     /**
-     * Push changed file to list.
+     * Retrieve changed files by console command.
      *
-     * For input parameters structure see changedFiles documentation.
+     * Returns associative array: key is a relative file path, value is a file status
      *
-     * @see changedFiles
-     *
-     * @param string $path Relative file path
-     * @param string $status File status
+     * @return array
      */
-    public function appendChangedFile($path, $status)
-    {
-        $this->changedFiles[$path] = $status;
-        ksort($this->changedFiles);
-    }
+    abstract protected function getChangedFilesInternal();
 
     /**
      * Retrieve file object by relative file path
@@ -262,10 +250,10 @@ abstract class BaseCommit extends Object
     public function getFileByPath($filePath)
     {
         $normalizePath = ltrim($filePath, DIRECTORY_SEPARATOR);
-        if (isset($this->changedFiles[$normalizePath])) {
-            $status = $this->changedFiles[$normalizePath];
-            $file = new File($this->repository->getProjectPath() . DIRECTORY_SEPARATOR . $normalizePath, $this->repository, $status);
-            return $file;
+        foreach ($this->getChangedFilesInternal() as $filePath => $status) {
+            if ($normalizePath == $filePath) {
+                return new File($this->repository->getProjectPath() . DIRECTORY_SEPARATOR . $filePath, $this->repository, $status);
+            }
         }
         return null;
     }
@@ -285,21 +273,13 @@ abstract class BaseCommit extends Object
     }
 
     /**
-     * Clear changed files array
-     */
-    public function resetChangedFiles()
-    {
-        $this->changedFiles = [];
-    }
-
-    /**
      * Retrieve array of files objects
      *
      * @return File[]
      */
     public function getChangedFiles()
     {
-        foreach ($this->changedFiles as $filePath => $status) {
+        foreach ($this->getChangedFilesInternal() as $filePath => $status) {
             $file = $this->getFileByPath($filePath);
             yield $file;
         }
