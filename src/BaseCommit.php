@@ -69,10 +69,11 @@ abstract class BaseCommit extends Object
      */
     public function init()
     {
-        if (!$this->id || !is_string($this->id)) {
+        $this->id = is_scalar($this->id) ? (string) $this->id : null;
+        if (empty($this->id)) {
             throw new CommonException("Id property required");
         }
-        if (!$this->contributorName) {
+        if (empty($this->contributorName)) {
             throw new CommonException("Contributor name required");
         }
         if (!$this->date || !($this->date instanceof DateTime)) {
