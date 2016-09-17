@@ -70,7 +70,7 @@ abstract class BaseCommit extends Object
     public function init()
     {
         $this->id = is_scalar($this->id) ? (string) $this->id : null;
-        if (empty($this->id)) {
+        if (trim($this->id) == '') {
             throw new CommonException("Id property required");
         }
         if (empty($this->contributorName)) {
