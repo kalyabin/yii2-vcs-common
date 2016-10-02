@@ -68,7 +68,8 @@ class File extends Object
     {
         $this->name = basename($pathName);
         $this->path = FileHelper::normalizePath($pathName);
-        $this->status = $status;
+        // first character for status
+        $this->status = !is_null($status) ? substr($status, 0, 1) : $status;
         $this->repository = $repository;
         if (!StringHelper::startsWith($this->path, $repository->getProjectPath())) {
             throw new CommonException("Path {$this->path} outband of repository");
