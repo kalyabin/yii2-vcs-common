@@ -199,7 +199,7 @@ abstract class BaseWrapper extends Object
             }
             // convert to internal encoding
             $charset = mb_detect_encoding($row);
-            if ($charset != $currentCharset) {
+            if (trim($charset) && $charset != $currentCharset) {
                 $row = mb_convert_encoding($row, $currentCharset, $charset);
             }
             if ($getArray) {
