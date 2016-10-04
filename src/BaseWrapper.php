@@ -215,6 +215,8 @@ abstract class BaseWrapper extends Object
         $status = pclose($res);
         if ($status != 0 && !$ignoreErrors) {
             $this->debug("* Non-zero status code: $status");
+            $debugString = is_array($result) ? implode(PHP_EOL, $result) : $result;
+            $this->debug("* Result is: \n$debugString");
             throw new CommonException('Command ' . $cmd . ' ended with ' . $status . ' status code', $status);
         }
         $this->debug("* Change directory to:\n\t$currentDirectory");
