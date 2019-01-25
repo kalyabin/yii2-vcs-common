@@ -1,12 +1,12 @@
 <?php
 namespace VcsCommon;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Diff object. Parse command line results to public variables.
  */
-abstract class BaseDiff extends Object
+abstract class BaseDiff extends BaseObject
 {
     /**
      * Path to nobody file (for checks new or removed files)

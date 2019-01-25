@@ -2,12 +2,12 @@
 namespace VcsCommon;
 
 use VcsCommon\exception\CommonException;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Represents base branch model
  */
-abstract class BaseBranch extends Object
+abstract class BaseBranch extends BaseObject
 {
     /**
      * @var BaseRepository

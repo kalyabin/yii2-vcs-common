@@ -3,12 +3,12 @@ namespace VcsCommon;
 
 use DateTime;
 use VcsCommon\exception\CommonException;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Represents base commit model
  */
-abstract class BaseCommit extends Object
+abstract class BaseCommit extends BaseObject
 {
     /**
      * @var BaseRepository

@@ -3,7 +3,7 @@ namespace VcsCommon;
 
 use Yii;
 use VcsCommon\exception\CommonException;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Abstract class provides access control to basic console commands
@@ -11,7 +11,7 @@ use yii\base\Object;
  *
  * Basicly type a cmd property and basics methods like checkVersion, getStatus etc.
  */
-abstract class BaseWrapper extends Object
+abstract class BaseWrapper extends BaseObject
 {
     /**
      * @var string path to console VCS (git, hg, etc.) command

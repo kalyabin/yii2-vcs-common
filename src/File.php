@@ -2,7 +2,7 @@
 namespace VcsCommon;
 
 use VcsCommon\exception\CommonException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 
@@ -12,7 +12,7 @@ use yii\helpers\StringHelper;
  * File may be exists now, or sometime removed.
  * This object implements everybody operations of stored files in repository.
  */
-class File extends Object
+class File extends BaseObject
 {
     const STATUS_ADDITION = 'A';
 

@@ -1,7 +1,7 @@
 <?php
 namespace VcsCommon;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Class represents graph history log.
@@ -9,7 +9,7 @@ use yii\base\Object;
  * - levels - count of nested commits;
  * - commits - all commits in a history.
  */
-class Graph extends Object
+class Graph extends BaseObject
 {
     /**
      * @var integer nested level

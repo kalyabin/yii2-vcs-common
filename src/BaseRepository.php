@@ -3,14 +3,14 @@ namespace VcsCommon;
 
 use DirectoryIterator;
 use VcsCommon\exception\CommonException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\FileHelper;
 
 /**
  * Abstract repository class
  * Provides access control to project repository
  */
-abstract class BaseRepository extends Object
+abstract class BaseRepository extends BaseObject
 {
     /**
      * Defines a commit diff command
